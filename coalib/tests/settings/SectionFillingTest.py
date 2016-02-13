@@ -1,7 +1,9 @@
+import os
 import unittest
 from pyprint.ConsolePrinter import ConsolePrinter
 
-from coalib.misc.ContextManagers import simulate_console_inputs
+from coalib.misc.ContextManagers import (simulate_console_inputs,
+                                         retrieve_stdout)
 from coalib.bears.GlobalBear import GlobalBear
 from coalib.bears.LocalBear import LocalBear
 from coalib.settings.SectionFilling import fill_section, fill_settings, Setting
@@ -85,3 +87,16 @@ class SectionFillingTest(unittest.TestCase):
         self.assertTrue("global name" in new_section)
         self.assertEqual(new_section["key"].value, "val")
         self.assertEqual(len(new_section.contents), 3)
+
+    def test_missing_bear(self):
+        self.section.append(Setting("bears",
+                                    "NonExistentTestBear"))
+        self.section.append(Setting(
+            "bear_dirs",
+            os.path.dirname(os.path.abspath(__file__))))
+        sections = {"test": self.section}
+        with retrieve_stdout() as sio:
+            fill_settings(sections, lambda *args: None, self.log_printer)
+            self.assertRegex(sio.getvalue(),
+                             ".*\\[WARNING\\].*No bear matching "
+                             "'NonExistentTestBear' was found.\n")

@@ -38,6 +38,10 @@ def fill_settings(sections, acquire_settings, log_printer):
                                              log_printer)
         all_bears = copy.deepcopy(section_local_bears)
         all_bears.extend(section_global_bears)
+        missing_bears = (set(bears) - set(name.__module__.rsplit(".", 1)[-1]
+                                          for name in all_bears))
+        for bear in missing_bears:
+            log_printer.warn("No bear matching '{}' was found.".format(bear))
         fill_section(section, acquire_settings, log_printer, all_bears)
 
         local_bears[section_name] = section_local_bears
