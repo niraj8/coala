@@ -30,6 +30,7 @@ class coalaJSONTest(unittest.TestCase):
         retval, output = execute_coala(
             coala_json.main, "coala-json", "todos", "-c",
             self.coafile)
+        print(output)
         output = json.loads(output)
         self.assertRegex(output["results"]["todos"][0]["message"],
                          r'The line contains the keyword `# \w+`.',

@@ -62,6 +62,7 @@ def run_coala(log_printer=None,
 
     exitcode = 0
     results = None
+    num_results = 0
     try:
         yielded_results = False
         did_nothing = True
@@ -125,6 +126,7 @@ def run_coala(log_printer=None,
                         continue
 
                     for result in value:
+                        num_results += 1
                         results_for_section.append(result)
 
                 results[section_name] = results_for_section
@@ -139,8 +141,10 @@ def run_coala(log_printer=None,
         if did_nothing:
             nothing_done(log_printer)
 
-        if yielded_results:
+        if yielded_results and num_results > 0:
             exitcode = 1
+        elif yielded_results and num_results == 0:
+            exitcode = 5
     except BaseException as exception:  # pylint: disable=broad-except
         exitcode = exitcode or get_exitcode(exception, log_printer)
 

@@ -194,6 +194,7 @@ def print_result(results,
                           result.severity >= min_severity and
                           not result.to_ignore(ignore_ranges),
                           results))
+    retval = retval or len(results) > 0
 
     if bool(section.get('autoapply', 'true')):
         results = autoapply_actions(results,
@@ -203,7 +204,7 @@ def print_result(results,
                                     log_printer)
 
     print_results(log_printer, section, results, file_dict, file_diff_dict)
-    return retval or len(results) > 0, results
+    return retval, results
 
 
 def get_file_dict(filename_list, log_printer):
@@ -419,7 +420,7 @@ def process_queues(processes,
     :param print_results:      Prints all given results appropriate to the
                                output medium.
     :return:                   Return True if all bears execute succesfully and
-                               Results were delivered to the user. Else False.
+                               we yielded Results, else False.
     """
     file_diff_dict = {}
     retval = False
