@@ -43,7 +43,8 @@ class coalaTest(unittest.TestCase):
 
     def test_find_issues(self):
         retval, output = execute_coala(
-            coala_ci.main, "coala-ci", "todos", "-c", self.coafile)
+            coala_ci.main, "coala-ci", "todos", "-c", self.coafile,
+            "-L", "DEBUG")
         self.assertRegex(output,
                          r'The line contains the keyword `# \w+`.',
                          "coala-ci output should be empty when running "
